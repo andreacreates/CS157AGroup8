@@ -93,6 +93,7 @@ public class HelloWorld {
 		System.out.println("Hello World");
 
 		HelloWorld.argumentExample("percussion");	
+		HelloWorld.argumentExample("guitar");
 		//HelloWorld.statementExample();
 		//HelloWorld.preparedStatementExample();
 		
