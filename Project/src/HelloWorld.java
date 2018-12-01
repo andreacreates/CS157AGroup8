@@ -4,12 +4,11 @@ import java.sql.*;
 public class HelloWorld {
 
 	public static void statementExample() {
-		DataBaseConnection db = new DataBaseConnection();
-		db.openConnection();
+		DataBaseConnection.openConnection();
 		try {
 			System.out.println("Model\tBrand\tType");
 
-			ResultSet rs = db.sqlStatement("SELECT * FROM product");
+			ResultSet rs = DataBaseConnection.sqlStatement("SELECT * FROM product");
 
 		
 			while (rs.next()) {
@@ -24,18 +23,17 @@ public class HelloWorld {
 				System.out.println("\t" + type);
 			}
 
-			db.closeConnection();
+			DataBaseConnection.closeConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public static void preparedStatementExample() {
-		DataBaseConnection db = new DataBaseConnection();
-		db.openConnection();
+		DataBaseConnection.openConnection();
 		
 		// Parameters are (?)
-		PreparedStatement stmt = db.createPreparedStatement("INSERT INTO user VALUES(?,?,?,?)");
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("INSERT INTO user VALUES(?,?,?,?)");
 		try {
 			
 			// Sets parameters of (?) SQL statement 
@@ -48,7 +46,7 @@ public class HelloWorld {
 			// use executeUpdate when calling INSERT, UPDATE, or DELETE only
 			stmt.executeUpdate();
 			
-			db.closeConnection();
+			DataBaseConnection.closeConnection();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -59,15 +57,14 @@ public class HelloWorld {
 	
 	public static void argumentExample(String input) {
 	
-		DataBaseConnection db = new DataBaseConnection();
-		db.openConnection();
+		DataBaseConnection.openConnection();
 		
-		PreparedStatement stmt = db.createPreparedStatement("SELECT * FROM product WHERE type = ?");
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM product WHERE type = ?");
 		
 		try {
 			stmt.setString(1, input);
 			
-			ResultSet rs = db.executePreparedStatement();
+			ResultSet rs = DataBaseConnection.executePreparedStatement();
 			
 			while (rs.next()) {
 				// Retrieve by column name
@@ -81,7 +78,7 @@ public class HelloWorld {
 				System.out.println("\t" + type);
 			}
 
-			db.closeConnection();
+			DataBaseConnection.closeConnection();
 			
 			
 		} catch (SQLException e) {

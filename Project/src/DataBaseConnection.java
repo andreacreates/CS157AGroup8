@@ -2,21 +2,21 @@ import java.sql.*;
 
 
 // Class used for connecting to the Database
-public class DataBaseConnection {
+public abstract class DataBaseConnection {
 	// JDBC driver name and database URL
-	private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-	private final String DB_URL = "jdbc:mysql://35.233.153.166:3306/cs157";
+	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+	private static final String DB_URL = "jdbc:mysql://35.233.153.166:3306/cs157";
 
 	// Database credentials
-	private final String USER = "root";
-	private final String PASS = "group3cs160";
+	private static final String USER = "root";
+	private static final String PASS = "group3cs160";
 	
 	// SQL Objects
-	private Connection conn;
-	private Statement stmt;
-	private ResultSet rs;
+	private static Connection conn;
+	private static Statement stmt;
+	private static ResultSet rs;
 
-	public Connection openConnection() {
+	public static Connection openConnection() {
 		try {
 			Class.forName(JDBC_DRIVER);
 			System.out.println("Connecting to database...");
@@ -31,7 +31,7 @@ public class DataBaseConnection {
 	}
 	
 	// creates prepared statement
-	public PreparedStatement createPreparedStatement(String sql) {
+	public static PreparedStatement createPreparedStatement(String sql) {
 		try {
 			stmt = conn.prepareStatement(sql);
 			return (PreparedStatement) stmt;
@@ -42,7 +42,7 @@ public class DataBaseConnection {
 	}
 	
 	// executes prepared statement and returns result set
-	public ResultSet executePreparedStatement() {
+	public static ResultSet executePreparedStatement() {
 		PreparedStatement ps = (PreparedStatement) stmt;
 		try {
 			rs =  ps.executeQuery();
@@ -54,7 +54,7 @@ public class DataBaseConnection {
 	}
 
 	// executes regular statement and returns result set
-	public ResultSet sqlStatement(String sql) {
+	public static ResultSet sqlStatement(String sql) {
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
@@ -68,7 +68,10 @@ public class DataBaseConnection {
 	}
 
 	// closes all SQL objects
-	public void closeConnection() {
+	public static void closeConnection() {
+		
+		System.out.println("Closing all connectoins");
+		
 		try {
 			if (stmt != null)
 				stmt.close();
