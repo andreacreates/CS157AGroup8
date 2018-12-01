@@ -61,29 +61,28 @@ public class Gui extends Application {
 		primaryStage.setTitle("Sales");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
+
 		ObservableList<SalePojo> data = FXCollections.observableArrayList();
 
 		TableView<SalePojo> table = new TableView<>();
 		table.setEditable(false);
 
-		TableColumn id = new TableColumn("Sale ID");
+		TableColumn<SalePojo, String> id = new TableColumn<>("Sale ID");
+		TableColumn<SalePojo, String> user = new TableColumn<>("User ID");
+		TableColumn<SalePojo, String> item = new TableColumn<>("Item");
+		TableColumn<SalePojo, String> amount = new TableColumn<>("Amount");
+		
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
-		TableColumn user = new TableColumn("User ID");
 		user.setCellValueFactory(new PropertyValueFactory<>("user"));
-		TableColumn item = new TableColumn("Item");
 		item.setCellValueFactory(new PropertyValueFactory<>("item"));
-		TableColumn amount = new TableColumn("Amount");
 		amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
 		table.getColumns().addAll(id, user, item, amount);
 		table.setItems(data);
-		
+
 		for (SalePojo p : guiAction.getSales()) {
 			data.add(p);
 		}
-
 
 		Button back = new Button("Back");
 
@@ -117,15 +116,16 @@ public class Gui extends Application {
 		TableView<ProductPojo> table = new TableView<>();
 		table.setEditable(false);
 
-		TableColumn model = new TableColumn("Model");
+		TableColumn<ProductPojo, String> model = new TableColumn<>("Model");
+		TableColumn<ProductPojo, String> brand = new TableColumn<>("Brand");
+		TableColumn<ProductPojo, String> type = new TableColumn<>("Type");
+		TableColumn<ProductPojo, String> view = new TableColumn<>("Views");
+		TableColumn<ProductPojo, String> bought = new TableColumn<>("Bought");
+
 		model.setCellValueFactory(new PropertyValueFactory<>("model"));
-		TableColumn brand = new TableColumn("Brand");
 		brand.setCellValueFactory(new PropertyValueFactory<>("brand"));
-		TableColumn type = new TableColumn("Type");
 		type.setCellValueFactory(new PropertyValueFactory<>("type"));
-		TableColumn view = new TableColumn("Views");
 		view.setCellValueFactory(new PropertyValueFactory<>("views"));
-		TableColumn bought = new TableColumn("Bought");
 		bought.setCellValueFactory(new PropertyValueFactory<>("bought"));
 
 		table.getColumns().addAll(model, brand, type, view, bought);
@@ -175,8 +175,6 @@ public class Gui extends Application {
 			else
 				details.setText(guiAction.getProductDetails(p));
 		});
-
-		
 
 		VBox right = new VBox(10);
 
