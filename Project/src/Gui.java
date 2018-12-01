@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -10,7 +11,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,7 +19,7 @@ public class Gui extends Application {
 
 	Stage primaryStage;
 	GuiAction guiAction;
-	
+
 	int height = 300;
 	int width = 400;
 
@@ -29,44 +29,95 @@ public class Gui extends Application {
 
 	private void getMainMenu() {
 		VBox main = new VBox();
+		main.setAlignment(Pos.CENTER);
+		main.setPadding(new Insets(10));
 		primaryStage.setTitle("Instrument Management");
-		
+
 		Scene scene = new Scene(main, width, height);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		Button button = new Button("View Products");
+		Button products = new Button("View Products");
+		Button sales = new Button("View Sales");
 
-		button.setOnAction(e -> {
+		products.setOnAction(e -> {
 			getViewProductMenu();
 		});
 
-		main.getChildren().add(button);
+		sales.setOnAction(e -> {
+			getSalesMenu();
+		});
+
+		main.getChildren().addAll(products, sales);
+
+	}
+
+	private void getSalesMenu() {
+		BorderPane main = new BorderPane();
+		main.setPadding(new Insets(10));
+
+		Scene scene = new Scene(main, width, height);
+
+		primaryStage.setTitle("Sales");
+		primaryStage.setScene(scene);
+		primaryStage.show();
 		
+		
+		ObservableList<SalePojo> data = FXCollections.observableArrayList();
+
+		TableView<SalePojo> table = new TableView<>();
+		table.setEditable(false);
+
+		TableColumn id = new TableColumn("Sale ID");
+		id.setCellValueFactory(new PropertyValueFactory<>("id"));
+		TableColumn user = new TableColumn("User ID");
+		user.setCellValueFactory(new PropertyValueFactory<>("user"));
+		TableColumn item = new TableColumn("Item");
+		item.setCellValueFactory(new PropertyValueFactory<>("item"));
+		TableColumn amount = new TableColumn("Amount");
+		amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+
+		table.getColumns().addAll(id, user, item, amount);
+		table.setItems(data);
+		
+		for (SalePojo p : guiAction.getSales()) {
+			data.add(p);
+		}
+
+
+		Button back = new Button("Back");
+
+		back.setOnAction(e -> {
+			getMainMenu();
+		});
+
+		VBox right = new VBox(10);
+
+		right.getChildren().addAll(back);
+
+		main.setRight(right);
+		main.setCenter(table);
 	}
 
 	private void getViewProductMenu() {
 
 		BorderPane main = new BorderPane();
-		
 		main.setPadding(new Insets(10));
-		
+
 		Scene scene = new Scene(main, width, height);
-		
+
 		Text details = new Text("Select a Product");
-		
+
 		primaryStage.setTitle("Products");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		
-		
-		ObservableList<ProductPojo> data = FXCollections.observableArrayList(); 
+		ObservableList<ProductPojo> data = FXCollections.observableArrayList();
 
 		TableView<ProductPojo> table = new TableView<>();
 		table.setEditable(false);
-		
-		TableColumn model = new TableColumn("Model");	
+
+		TableColumn model = new TableColumn("Model");
 		model.setCellValueFactory(new PropertyValueFactory<>("model"));
 		TableColumn brand = new TableColumn("Brand");
 		brand.setCellValueFactory(new PropertyValueFactory<>("brand"));
@@ -74,28 +125,32 @@ public class Gui extends Application {
 		type.setCellValueFactory(new PropertyValueFactory<>("type"));
 		TableColumn view = new TableColumn("Views");
 		view.setCellValueFactory(new PropertyValueFactory<>("views"));
-		TableColumn bought = new TableColumn("bought");
+		TableColumn bought = new TableColumn("Bought");
 		bought.setCellValueFactory(new PropertyValueFactory<>("bought"));
-		
-		table.getColumns().addAll(model, brand, type, view, bought);
 
+		table.getColumns().addAll(model, brand, type, view, bought);
+		table.setItems(data);
 
 		for (ProductPojo p : guiAction.getProducts()) {
 			data.add(p);
 		}
 
-		
 		Button back = new Button("Back");
 		Button delete = new Button("Delete");
 		Button getDetails = new Button("Details");
+		Button add = new Button("New Item");
 
 		back.setOnAction(e -> {
 			getMainMenu();
 		});
-		
+
+		add.setOnAction(e -> {
+			System.out.println("Unimplemented");
+		});
+
 		delete.setOnAction(e -> {
 			ProductPojo p = table.getSelectionModel().getSelectedItem();
-			
+
 			if (p == null) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("No Item Selected");
@@ -104,24 +159,28 @@ public class Gui extends Application {
 
 				alert.showAndWait();
 			}
-			
+
 			else {
 				System.out.println(p.toString());
 			}
-			
+
 		});
-		
+
 		getDetails.setOnAction(e -> {
 			ProductPojo p = table.getSelectionModel().getSelectedItem();
-			details.setText(guiAction.getProductDetails(p));
+
+			if (p == null)
+				details.setText("No item selected");
+
+			else
+				details.setText(guiAction.getProductDetails(p));
 		});
-		
-		table.setItems(data);
 
 		
+
 		VBox right = new VBox(10);
-		
-		right.getChildren().addAll(back, delete, getDetails);
+
+		right.getChildren().addAll(back, add, delete, getDetails);
 
 		main.setCenter(table);
 		main.setRight(right);
@@ -131,11 +190,9 @@ public class Gui extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
 		this.primaryStage = primaryStage;
 		guiAction = new GuiAction();
 		getMainMenu();
-		
 	}
 
 }

@@ -2,7 +2,7 @@ import java.sql.*;
 
 
 // Class used for connecting to the Database
-public abstract class DataBaseConnection {
+public final class DataBaseConnection {
 	// JDBC driver name and database URL
 	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 	private static final String DB_URL = "jdbc:mysql://35.233.153.166:3306/cs157";
@@ -15,13 +15,13 @@ public abstract class DataBaseConnection {
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
+	
+	
 
 	public static Connection openConnection() {
 		try {
 			Class.forName(JDBC_DRIVER);
-			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			System.out.println("Connected!!");
 			return conn;
 
 		} catch (Exception e) {
@@ -69,9 +69,7 @@ public abstract class DataBaseConnection {
 
 	// closes all SQL objects
 	public static void closeConnection() {
-		
-		System.out.println("Closing all connectoins");
-		
+
 		try {
 			if (stmt != null)
 				stmt.close();

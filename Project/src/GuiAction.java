@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiAction {
-
+	
 	public List<ProductPojo> getProducts() {
 
 		ArrayList<ProductPojo> ret = new ArrayList<>();
@@ -32,6 +32,32 @@ public class GuiAction {
 		return ret;
 
 	}
+	
+	public List<SalePojo> getSales() {
+
+		ArrayList<SalePojo> ret = new ArrayList<>();
+		DataBaseConnection.openConnection();
+
+		ResultSet rs = DataBaseConnection.sqlStatement("SELECT * FROM sales");
+
+		try {
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				int user = rs.getInt("user");
+				int item = rs.getInt("item");
+				int amount = rs.getInt("amount");
+
+				ret.add(new SalePojo(id, user, item, amount));
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DataBaseConnection.closeConnection();
+		return ret;
+
+	}
 
 	public String getProductDetails(ProductPojo p) {
 
@@ -45,31 +71,32 @@ public class GuiAction {
 		try {
 			stmt.setInt(1, model);
 			ResultSet res = stmt.executeQuery();
-			res.next();
+			if (res.next()) {
 
-			if (type.equals("guitar")) {
-				String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
-						+ "Size: " + res.getString("size") + "\n";
+				if (type.equals("guitar")) {
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
+							+ "Size: " + res.getString("size") + "\n";
 
-				DataBaseConnection.closeConnection();
-				return ret;
-			}
+					DataBaseConnection.closeConnection();
+					return ret;
+				}
 
-			else if (type.equals("bass")) {
-				String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n";
+				else if (type.equals("bass")) {
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n";
 
-				DataBaseConnection.closeConnection();
-				return ret;
-			}
+					DataBaseConnection.closeConnection();
+					return ret;
+				}
 
-			else {
+				else if (type.equals("percussion")){
 
-				String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
-						+ "Pieces: " + res.getString("pieces") + "\n";
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
+							+ "Pieces: " + res.getString("pieces") + "\n";
 
-				DataBaseConnection.closeConnection();
-				return ret;
+					DataBaseConnection.closeConnection();
+					return ret;
 
+				}
 			}
 
 		} catch (SQLException e) {
