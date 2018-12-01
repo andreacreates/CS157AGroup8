@@ -82,8 +82,8 @@ public class DataBaseConnection {
 		}
 
 		try {
-			if (stmt != null)
-				stmt.close();
+			if (rs != null)
+				rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
