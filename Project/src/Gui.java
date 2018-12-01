@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +32,7 @@ public class Gui extends Application {
 		VBox main = new VBox();
 		main.setAlignment(Pos.CENTER);
 		main.setPadding(new Insets(10));
+		main.setSpacing(10);
 		primaryStage.setTitle("Instrument Management");
 
 		Scene scene = new Scene(main, width, height);
@@ -71,7 +73,7 @@ public class Gui extends Application {
 		TableColumn<SalePojo, String> user = new TableColumn<>("User ID");
 		TableColumn<SalePojo, String> item = new TableColumn<>("Item");
 		TableColumn<SalePojo, String> amount = new TableColumn<>("Amount");
-		
+
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
 		user.setCellValueFactory(new PropertyValueFactory<>("user"));
 		item.setCellValueFactory(new PropertyValueFactory<>("item"));
@@ -104,8 +106,6 @@ public class Gui extends Application {
 		main.setPadding(new Insets(10));
 
 		Scene scene = new Scene(main, width, height);
-
-		Text details = new Text("Select a Product");
 
 		primaryStage.setTitle("Products");
 		primaryStage.setScene(scene);
@@ -140,6 +140,8 @@ public class Gui extends Application {
 		Button getDetails = new Button("Details");
 		Button add = new Button("New Item");
 
+		Text details = new Text("Select a Product");
+
 		back.setOnAction(e -> {
 			getMainMenu();
 		});
@@ -153,15 +155,28 @@ public class Gui extends Application {
 
 			if (p == null) {
 				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("No Item Selected");
+				alert.setTitle("Alert");
 				alert.setHeaderText("No Item Selected");
 				alert.setContentText("You have not selected any item");
 
 				alert.showAndWait();
+
 			}
 
 			else {
-				System.out.println(p.toString());
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Confirmation");
+				alert.setHeaderText("Delete Item");
+				alert.setContentText("Are you sure you want to delete item: " + p.getModel() + "?");
+				alert.showAndWait();
+
+				if (alert.getResult() == ButtonType.OK) {
+					System.out.println("Clicked yes Unimplemented DELETE");
+				}
+
+				else {
+					System.out.println("Canceled Delete");
+				}
 			}
 
 		});
@@ -169,8 +184,13 @@ public class Gui extends Application {
 		getDetails.setOnAction(e -> {
 			ProductPojo p = table.getSelectionModel().getSelectedItem();
 
-			if (p == null)
-				details.setText("No item selected");
+			if (p == null) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Alert");
+				alert.setHeaderText("No Item Selected");
+				alert.setContentText("You have not selected any item");
+				alert.showAndWait();
+			}
 
 			else
 				details.setText(guiAction.getProductDetails(p));

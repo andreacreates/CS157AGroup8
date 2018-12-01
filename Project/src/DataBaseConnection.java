@@ -1,6 +1,5 @@
 import java.sql.*;
 
-
 // Class used for connecting to the Database
 public final class DataBaseConnection {
 	// JDBC driver name and database URL
@@ -10,13 +9,11 @@ public final class DataBaseConnection {
 	// Database credentials
 	private static final String USER = "root";
 	private static final String PASS = "group3cs160";
-	
+
 	// SQL Objects
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
-	
-	
 
 	public static Connection openConnection() {
 		try {
@@ -29,7 +26,7 @@ public final class DataBaseConnection {
 			return null;
 		}
 	}
-	
+
 	// creates prepared statement
 	public static PreparedStatement createPreparedStatement(String sql) {
 		try {
@@ -40,12 +37,12 @@ public final class DataBaseConnection {
 			return null;
 		}
 	}
-	
+
 	// executes prepared statement and returns result set
 	public static ResultSet executePreparedStatement() {
 		PreparedStatement ps = (PreparedStatement) stmt;
 		try {
-			rs =  ps.executeQuery();
+			rs = ps.executeQuery();
 			return rs;
 		} catch (SQLException e) {
 			e.printStackTrace();

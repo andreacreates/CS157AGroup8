@@ -10,7 +10,6 @@ public class HelloWorld {
 
 			ResultSet rs = DataBaseConnection.sqlStatement("SELECT * FROM product");
 
-		
 			while (rs.next()) {
 				// Retrieve by column name
 				int model = rs.getInt("model");
@@ -28,44 +27,42 @@ public class HelloWorld {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void preparedStatementExample() {
 		DataBaseConnection.openConnection();
-		
+
 		// Parameters are (?)
 		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("INSERT INTO user VALUES(?,?,?,?)");
 		try {
-			
-			// Sets parameters of (?) SQL statement 
+
+			// Sets parameters of (?) SQL statement
 			stmt.setInt(1, 25);
 			stmt.setString(2, "M");
 			stmt.setInt(3, 8);
 			stmt.setInt(4, 80);
-			
-			
+
 			// use executeUpdate when calling INSERT, UPDATE, or DELETE only
 			stmt.executeUpdate();
-			
+
 			DataBaseConnection.closeConnection();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
-	
+
 	public static void argumentExample(String input) {
-	
+
 		DataBaseConnection.openConnection();
-		
+
 		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM product WHERE type = ?");
-		
+
 		try {
 			stmt.setString(1, input);
-			
+
 			ResultSet rs = DataBaseConnection.executePreparedStatement();
-			
+
 			while (rs.next()) {
 				// Retrieve by column name
 				int model = rs.getInt("model");
@@ -79,8 +76,7 @@ public class HelloWorld {
 			}
 
 			DataBaseConnection.closeConnection();
-			
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -89,11 +85,11 @@ public class HelloWorld {
 	public static void main(String[] args) {
 		System.out.println("Hello World");
 
-		HelloWorld.argumentExample("percussion");	
+		HelloWorld.argumentExample("percussion");
 		HelloWorld.argumentExample("guitar");
-		//HelloWorld.statementExample();
-		//HelloWorld.preparedStatementExample();
-		
+		// HelloWorld.statementExample();
+		// HelloWorld.preparedStatementExample();
+
 		System.out.println("Goodbye!");
 	}
 }
