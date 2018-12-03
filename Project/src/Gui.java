@@ -8,10 +8,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -22,7 +25,7 @@ public class Gui extends Application {
 	GuiAction guiAction;
 
 	int height = 300;
-	int width = 400;
+	int width = 500;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -42,7 +45,6 @@ public class Gui extends Application {
 		Button products = new Button("View Products");
 		Button sales = new Button("View Sales");
 		Button users = new Button("View Users");
-		
 
 		products.setOnAction(e -> {
 			getViewProductMenu();
@@ -51,11 +53,10 @@ public class Gui extends Application {
 		sales.setOnAction(e -> {
 			getSalesMenu();
 		});
-		
+
 		users.setOnAction(e -> {
 			getUsersMenu();
 		});
-
 
 		main.getChildren().addAll(products, sales, users);
 
@@ -107,6 +108,93 @@ public class Gui extends Application {
 		main.setCenter(table);
 	}
 
+	private void getAddMenu() {
+		BorderPane main = new BorderPane();
+		main.setPadding(new Insets(10));
+
+		Scene scene = new Scene(main, width, height);
+
+		primaryStage.setTitle("Add New Product");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+		VBox right = new VBox(10);
+		TilePane center = new TilePane(10, 10);
+		center.setPrefColumns(2);
+
+		ComboBox<String> typeBox = new ComboBox<>();
+		typeBox.getItems().addAll("Guitar", "Bass", "Percussion");
+
+		Button cancel = new Button("Cancel");
+		Button submit = new Button("Submit");
+
+		Text type = new Text("Type");
+		Text brand = new Text("Brand");
+		Text model = new Text("Model");
+		Text price = new Text("Price");
+		Text kind = new Text("Kind");
+		Text special = new Text();
+
+		TextField brandText = new TextField();
+		TextField modelText = new TextField();
+		TextField priceText = new TextField();
+		TextField kindText = new TextField();
+		TextField specialText = new TextField();
+
+		cancel.setOnAction(e -> {
+			getViewProductMenu();
+		});
+
+		typeBox.setOnAction(e -> {
+
+			if (typeBox.getValue().equals("Guitar")) {
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+				brandText.setDisable(false);
+				modelText.setDisable(false);
+				priceText.setDisable(false);
+				kindText.setDisable(false);
+				specialText.setDisable(false);
+
+				special.setText("Size");
+				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText, special, specialText);
+			}
+
+			else if (typeBox.getValue().equals("Bass")) {
+
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+
+				brandText.setDisable(false);
+				modelText.setDisable(false);
+				priceText.setDisable(false);
+				kindText.setDisable(false);
+				specialText.setDisable(false);
+				
+				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText);
+			}
+
+			else if (typeBox.getValue().equals("Percussion")) {
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+
+				brandText.setDisable(false);
+				modelText.setDisable(false);
+				priceText.setDisable(false);
+				kindText.setDisable(false);
+				specialText.setDisable(false);
+
+				special.setText("Pieces");
+				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText, special, specialText);
+			}
+
+		});
+
+		right.getChildren().addAll(cancel,submit);
+		center.getChildren().addAll(type, typeBox);
+
+		main.setRight(right);
+		main.setCenter(center);
+
+	}
+
 	private void getViewProductMenu() {
 
 		BorderPane main = new BorderPane();
@@ -154,7 +242,7 @@ public class Gui extends Application {
 		});
 
 		add.setOnAction(e -> {
-			System.out.println("Unimplemented");
+			getAddMenu();
 		});
 
 		delete.setOnAction(e -> {
@@ -212,7 +300,7 @@ public class Gui extends Application {
 		main.setBottom(details);
 
 	}
-	
+
 	private void getUsersMenu() {
 		BorderPane main = new BorderPane();
 		main.setPadding(new Insets(10));
@@ -232,7 +320,6 @@ public class Gui extends Application {
 		TableColumn<UserPojo, String> gender = new TableColumn<>("Gender");
 		TableColumn<UserPojo, String> age = new TableColumn<>("Age");
 		TableColumn<UserPojo, String> browseTime = new TableColumn<>("Browse Time");
-	
 
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
 		gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
@@ -255,7 +342,6 @@ public class Gui extends Application {
 		back.setOnAction(e -> {
 			getMainMenu();
 		});
-
 
 		delete.setOnAction(e -> {
 			UserPojo p = table.getSelectionModel().getSelectedItem();
@@ -288,20 +374,17 @@ public class Gui extends Application {
 
 		});
 
-/*		getDetails.setOnAction(e -> {
-			UserPojo p = table.getSelectionModel().getSelectedItem();
-
-			if (p == null) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Alert");
-				alert.setHeaderText("No Item Selected");
-				alert.setContentText("You have not selected any item");
-				alert.showAndWait();
-			}
-
-			else
-				details.setText(guiAction.getUserDetails(p));
-		});*/
+		/*
+		 * getDetails.setOnAction(e -> { UserPojo p =
+		 * table.getSelectionModel().getSelectedItem();
+		 * 
+		 * if (p == null) { Alert alert = new Alert(AlertType.ERROR);
+		 * alert.setTitle("Alert"); alert.setHeaderText("No Item Selected");
+		 * alert.setContentText("You have not selected any item"); alert.showAndWait();
+		 * }
+		 * 
+		 * else details.setText(guiAction.getUserDetails(p)); });
+		 */
 
 		VBox right = new VBox(10);
 
@@ -316,7 +399,8 @@ public class Gui extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		guiAction = new GuiAction();
-		getMainMenu();
+		// getMainMenu();
+		getAddMenu();
 	}
 
 }
