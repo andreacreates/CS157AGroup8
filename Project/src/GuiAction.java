@@ -58,6 +58,32 @@ public class GuiAction {
 		return ret;
 
 	}
+	
+	public List<UserPojo> getUsers() {
+
+		ArrayList<UserPojo> ret = new ArrayList<>();
+		DataBaseConnection.openConnection();
+
+		ResultSet rs = DataBaseConnection.sqlStatement("SELECT * FROM user");
+
+		try {
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String gender = rs.getString("gender");
+				int age = rs.getInt("age");
+				float browseTime = rs.getFloat("browseTime");
+
+				ret.add(new UserPojo(id, gender, age, browseTime));
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DataBaseConnection.closeConnection();
+		return ret;
+
+	}
 
 	public String getProductDetails(ProductPojo p) {
 
@@ -105,5 +131,7 @@ public class GuiAction {
 
 		return "Error";
 	}
+	
+	
 
 }

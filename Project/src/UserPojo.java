@@ -7,7 +7,7 @@ public class UserPojo {
 	float browseTime;
 
 
-	public UserPojo (int id, int age, String gender, float browseTime) {
+	public UserPojo (int id, String gender, int age, float browseTime) {
 		super();
 		this.id = id;
 		this.age = age;

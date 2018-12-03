@@ -214,7 +214,102 @@ public class Gui extends Application {
 	}
 	
 	private void getUsersMenu() {
-		
+		BorderPane main = new BorderPane();
+		main.setPadding(new Insets(10));
+
+		Scene scene = new Scene(main, width, height);
+
+		primaryStage.setTitle("Users");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+		ObservableList<UserPojo> data = FXCollections.observableArrayList();
+
+		TableView<UserPojo> table = new TableView<>();
+		table.setEditable(false);
+
+		TableColumn<UserPojo, String> id = new TableColumn<>("User ID");
+		TableColumn<UserPojo, String> gender = new TableColumn<>("Gender");
+		TableColumn<UserPojo, String> age = new TableColumn<>("Age");
+		TableColumn<UserPojo, String> browseTime = new TableColumn<>("Browse Time");
+	
+
+		id.setCellValueFactory(new PropertyValueFactory<>("id"));
+		gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
+		age.setCellValueFactory(new PropertyValueFactory<>("age"));
+		browseTime.setCellValueFactory(new PropertyValueFactory<>("browseTime"));
+
+		table.getColumns().addAll(id, gender, age, browseTime);
+		table.setItems(data);
+
+		for (UserPojo p : guiAction.getUsers()) {
+			data.add(p);
+		}
+
+		Button back = new Button("Back");
+		Button delete = new Button("Delete");
+		Button getDetails = new Button("Details");
+
+		Text details = new Text("Select a User");
+
+		back.setOnAction(e -> {
+			getMainMenu();
+		});
+
+
+		delete.setOnAction(e -> {
+			UserPojo p = table.getSelectionModel().getSelectedItem();
+
+			if (p == null) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Alert");
+				alert.setHeaderText("No Item Selected");
+				alert.setContentText("You have not selected any user");
+
+				alert.showAndWait();
+
+			}
+
+			else {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Confirmation");
+				alert.setHeaderText("Delete User");
+				alert.setContentText("Are you sure you want to delete user: " + p.getId() + "?");
+				alert.showAndWait();
+
+				if (alert.getResult() == ButtonType.OK) {
+					System.out.println("Clicked yes Unimplemented DELETE");
+				}
+
+				else {
+					System.out.println("Canceled Delete");
+				}
+			}
+
+		});
+
+/*		getDetails.setOnAction(e -> {
+			UserPojo p = table.getSelectionModel().getSelectedItem();
+
+			if (p == null) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Alert");
+				alert.setHeaderText("No Item Selected");
+				alert.setContentText("You have not selected any item");
+				alert.showAndWait();
+			}
+
+			else
+				details.setText(guiAction.getUserDetails(p));
+		});*/
+
+		VBox right = new VBox(10);
+
+		right.getChildren().addAll(back, delete, getDetails);
+
+		main.setCenter(table);
+		main.setRight(right);
+		main.setBottom(details);
 	}
 
 	@Override
