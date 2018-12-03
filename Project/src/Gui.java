@@ -41,6 +41,8 @@ public class Gui extends Application {
 
 		Button products = new Button("View Products");
 		Button sales = new Button("View Sales");
+		Button users = new Button("View Users");
+		
 
 		products.setOnAction(e -> {
 			getViewProductMenu();
@@ -49,8 +51,13 @@ public class Gui extends Application {
 		sales.setOnAction(e -> {
 			getSalesMenu();
 		});
+		
+		users.setOnAction(e -> {
+			getUsersMenu();
+		});
 
-		main.getChildren().addAll(products, sales);
+
+		main.getChildren().addAll(products, sales, users);
 
 	}
 
@@ -204,6 +211,10 @@ public class Gui extends Application {
 		main.setRight(right);
 		main.setBottom(details);
 
+	}
+	
+	private void getUsersMenu() {
+		
 	}
 
 	@Override
