@@ -210,18 +210,18 @@ public class GuiAction {
 		return true;
 	}
 	
-	public int[] getUserGenderStat() {
+	public int[] getUserGenderStat(int param) {
 		DataBaseConnection.openConnection();
-		ResultSet rs = DataBaseConnection.sqlStatement("SELECT count(gender) AS count, gender FROM user GROUP BY gender");
+		ResultSet rs = DataBaseConnection.sqlStatement("SELECT gender, sum(browseTime) AS browseTime, count(id) AS count FROM user GROUP BY gender");
 		int male = 0;
 		int female = 0;
 		try {
 			rs.next();
-			if (rs.getString(2).equals("M")) male = rs.getInt(1);
-			else female = rs.getInt(1);
+			if (rs.getString(1).equals("M")) male = rs.getInt(param);
+			else female = rs.getInt(param);
 			rs.next();
-			if (rs.getString(2).equals("M")) male = rs.getInt(1);
-			else female = rs.getInt(1);
+			if (rs.getString(1).equals("M")) male = rs.getInt(param);
+			else female = rs.getInt(param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -234,8 +234,7 @@ public class GuiAction {
 	
 	public static void main(String[] args) {
 		GuiAction action = new GuiAction();
-		
-		action.getUserGenderStat();
+
 	}
 
 }

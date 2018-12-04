@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -50,8 +51,6 @@ public class Gui extends Application {
 		Button products = new Button("View Products");
 		Button sales = new Button("View Sales");
 		Button users = new Button("View Users");
-		Button userChart = new Button("User Chart by Gender");
-		Button guitarChart = new Button("Guitar Graph");
 
 		products.setOnAction(e -> {
 			getViewProductMenu();
@@ -65,16 +64,7 @@ public class Gui extends Application {
 			getUsersMenu();
 		});
 
-		userChart.setOnAction(e -> {
-			getUserChart();
-		});
-
-		guitarChart.setOnAction(e -> {
-			getGuitarChart();
-		});
-
-		main.getChildren().addAll(products, sales, users, userChart, guitarChart);
-
+		main.getChildren().addAll(products, sales, users);
 	}
 
 	private void getSalesMenu() {
@@ -334,6 +324,7 @@ public class Gui extends Application {
 
 				if (alert.getResult() == ButtonType.OK) {
 					guiAction.deleteProduct(p.getModel());
+					data.remove(p);
 				}
 
 				else {
@@ -371,8 +362,10 @@ public class Gui extends Application {
 	private void getUsersMenu() {
 		BorderPane main = new BorderPane();
 		main.setPadding(new Insets(10));
+		
+		ScrollPane sp = new ScrollPane(main);
 
-		Scene scene = new Scene(main, width, height);
+		Scene scene = new Scene(sp, width, height);
 
 		primaryStage.setTitle("Users");
 		primaryStage.setScene(scene);
@@ -382,6 +375,7 @@ public class Gui extends Application {
 
 		TableView<UserPojo> table = new TableView<>();
 		table.setEditable(false);
+		table.autosize();
 
 		TableColumn<UserPojo, String> id = new TableColumn<>("User ID");
 		TableColumn<UserPojo, String> gender = new TableColumn<>("Gender");
@@ -403,8 +397,6 @@ public class Gui extends Application {
 		Button back = new Button("Back");
 		Button delete = new Button("Delete");
 		Button getDetails = new Button("Details");
-
-		Text details = new Text("Select a User");
 
 		back.setOnAction(e -> {
 			getMainMenu();
@@ -454,85 +446,59 @@ public class Gui extends Application {
 		 */
 
 		VBox right = new VBox(10);
+		VBox bottom = new VBox(10);
 
 		right.getChildren().addAll(back, delete, getDetails);
+		
+		Chart count = getUserChart();
+		Chart browse = getUserBrowseChart();
+		
+		bottom.getChildren().addAll(count,browse);
+		
 
 		main.setCenter(table);
 		main.setRight(right);
-		main.setBottom(details);
+		main.setBottom(bottom);
 	}
 
-	private void getUserChart() {
+	private Chart getUserChart() {
 
-		BorderPane main = new BorderPane();
-		main.setPadding(new Insets(10));
+		int[] stats = guiAction.getUserGenderStat(3);
 
-		Scene scene = new Scene(main, width, height);
-
-		primaryStage.setTitle("User Gender Chart");
-		primaryStage.setScene(scene);
-		primaryStage.show();
-
-		VBox right = new VBox(10);
-		TilePane center = new TilePane(10, 10);
-		center.setPrefColumns(2);
-		
-		int[] stats = guiAction.getUserGenderStat();
-
-		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(new PieChart.Data("Female", stats[1]),
-				new PieChart.Data("Male", stats[0]));
+		ObservableList<PieChart.Data> pieChartData = FXCollections
+				.observableArrayList(new PieChart.Data("Female", stats[1]), new PieChart.Data("Male", stats[0]));
 
 		PieChart chart = new PieChart(pieChartData);
-		chart.setTitle("User Gender Distribution");
-
-		chart.setData(pieChartData);
-
-		main.setCenter(chart);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		chart.setTitle("Gender Distribution");
+		chart.setData(pieChartData);		
+		return chart;
 
 	}
 
-	private void getGuitarChart() {
-		/*
-		 * final static String austria = "Austria"; final static String brazil =
-		 * "Brazil"; final static String france = "France"; final static String italy =
-		 * "Italy"; final static String usa = "USA";
-		 * 
-		 * @Override public void start(Stage stage) {
-		 * stage.setTitle("Bar Chart Sample"); final CategoryAxis xAxis = new
-		 * CategoryAxis(); final NumberAxis yAxis = new NumberAxis(); final
-		 * BarChart<String,Number> bc = new BarChart<String,Number>(xAxis,yAxis);
-		 * bc.setTitle("Country Summary"); xAxis.setLabel("Country");
-		 * yAxis.setLabel("Value");
-		 * 
-		 * XYChart.Series series1 = new XYChart.Series(); series1.setName("2003");
-		 * series1.getData().add(new XYChart.Data(austria, 25601.34));
-		 * series1.getData().add(new XYChart.Data(brazil, 20148.82));
-		 * series1.getData().add(new XYChart.Data(france, 10000));
-		 * series1.getData().add(new XYChart.Data(italy, 35407.15));
-		 * series1.getData().add(new XYChart.Data(usa, 12000));
-		 * 
-		 * XYChart.Series series2 = new XYChart.Series(); series2.setName("2004");
-		 * series2.getData().add(new XYChart.Data(austria, 57401.85));
-		 * series2.getData().add(new XYChart.Data(brazil, 41941.19));
-		 * series2.getData().add(new XYChart.Data(france, 45263.37));
-		 * series2.getData().add(new XYChart.Data(italy, 117320.16));
-		 * series2.getData().add(new XYChart.Data(usa, 14845.27));
-		 * 
-		 * XYChart.Series series3 = new XYChart.Series(); series3.setName("2005");
-		 * series3.getData().add(new XYChart.Data(austria, 45000.65));
-		 * series3.getData().add(new XYChart.Data(brazil, 44835.76));
-		 * series3.getData().add(new XYChart.Data(france, 18722.18));
-		 * series3.getData().add(new XYChart.Data(italy, 17557.31));
-		 * series3.getData().add(new XYChart.Data(usa, 92633.68));
-		 * 
-		 * Scene scene = new Scene(bc,800,600); bc.getData().addAll(series1, series2,
-		 * series3); stage.setScene(scene); stage.show(); }
-		 */
-	}
+	private Chart getUserBrowseChart() {
 
-	// }
+		String male = "Male";
+		String female = "Female";
+
+		CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
+		BarChart<String, Number> bc = new BarChart<String, Number>(xAxis, yAxis);
+		bc.setTitle("Browse Time by Gender");
+		xAxis.setLabel("Gender");
+		yAxis.setLabel("Time in minutes");
+		
+		int[] result = guiAction.getUserGenderStat(2);
+
+		XYChart.Series series1 = new XYChart.Series();
+		series1.getData().add(new XYChart.Data(male, result[0]));
+		series1.getData().add(new XYChart.Data(female, result[1]));
+
+		bc.getData().addAll(series1);
+		
+		
+		return bc;
+
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
