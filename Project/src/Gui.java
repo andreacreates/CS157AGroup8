@@ -362,10 +362,8 @@ public class Gui extends Application {
 	private void getUsersMenu() {
 		BorderPane main = new BorderPane();
 		main.setPadding(new Insets(10));
-		
-		ScrollPane sp = new ScrollPane(main);
 
-		Scene scene = new Scene(sp, width, height);
+		Scene scene = new Scene(main, width, height);
 
 		primaryStage.setTitle("Users");
 		primaryStage.setScene(scene);
@@ -397,6 +395,7 @@ public class Gui extends Application {
 		Button back = new Button("Back");
 		Button delete = new Button("Delete");
 		Button getDetails = new Button("Details");
+		Button stats = new Button("View Stats");
 
 		back.setOnAction(e -> {
 			getMainMenu();
@@ -444,21 +443,61 @@ public class Gui extends Application {
 		 * 
 		 * else details.setText(guiAction.getUserDetails(p)); });
 		 */
+		
+		stats.setOnAction(e -> {
+			getUserStats();
+		});
 
 		VBox right = new VBox(10);
 		VBox bottom = new VBox(10);
 
-		right.getChildren().addAll(back, delete, getDetails);
-		
-		Chart count = getUserChart();
-		Chart browse = getUserBrowseChart();
-		
-		bottom.getChildren().addAll(count,browse);
+		right.getChildren().addAll(back, delete, getDetails, stats);
 		
 
 		main.setCenter(table);
 		main.setRight(right);
 		main.setBottom(bottom);
+	}
+	
+	private void getUserStats() {
+		VBox main = new VBox();
+		main.setPadding(new Insets(10));
+		
+		ScrollPane sp = new ScrollPane(main);
+
+		Scene scene = new Scene(sp, width, height);
+
+		primaryStage.setTitle("User Stats");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		
+		
+		Button back = new Button("Back");
+
+		
+		back.setOnAction(e -> {
+			getUsersMenu();
+		});
+		
+		ComboBox<String> typeBox = new ComboBox<>();
+		typeBox.getItems().addAll("Gender", "Browse Time");
+		
+		
+		
+		typeBox.setOnAction(e -> {
+			if (typeBox.getValue().equals("Gender")) {
+				if (main.getChildren().size()> 2)main.getChildren().remove(2);
+				main.getChildren().add(getUserChart());
+			}
+			
+			else if (typeBox.getValue().equals("Browse Time")) {
+				if (main.getChildren().size()> 2)main.getChildren().remove(2);
+				main.getChildren().add(getUserBrowseChart());
+			}
+		});
+		
+		
+		main.getChildren().addAll(typeBox, back);
 	}
 
 	private Chart getUserChart() {

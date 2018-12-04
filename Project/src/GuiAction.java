@@ -2,7 +2,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GuiAction {
 
@@ -231,10 +233,44 @@ public class GuiAction {
 		return ret;
 	}
 	
+	public Map getProductStats(String group) {
+		DataBaseConnection.openConnection();
+		ResultSet rs = DataBaseConnection.sqlStatement(("SELECT " + group + ", AVG(bought), AVG(views), COUNT(" + group + ") FROM product GROUP BY " + group));
+
+		
+		HashMap<String, int[]> result = new HashMap<>();
+
+		try {
+			
+			while(rs.next()) {
+				String attribute = rs.getString(1);
+				int bought = rs.getInt(2);
+				int view = rs.getInt(3);
+				int count = rs.getInt(4);
+				
+				int[] stats = {bought, view, count};
+				result.put(attribute, stats);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+		return result;
+	}
+	
 	
 	public static void main(String[] args) {
-		GuiAction action = new GuiAction();
+		GuiAction g = new GuiAction();
+		Map<String, int[]> map = g.getProductStats("brand");
 
+		
+		int[] arr = map.get("Yamaha");
+		
+		for (int i : arr) {
+			System.out.println(i);
+		}
 	}
 
 }
