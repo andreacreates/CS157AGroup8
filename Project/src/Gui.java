@@ -149,24 +149,28 @@ public class Gui extends Application {
 
 			boolean success = false;
 
-			if (typeBox.getValue().equals("Guitar")) {
-				success = guiAction.addGuitar(brandText.getText(), Integer.parseInt(modelText.getText()),
-						Double.parseDouble(priceText.getText()), kindText.getText(), specialText.getText());
+			try {
+
+				if (typeBox.getValue().equals("Guitar")) {
+					success = guiAction.addGuitar(brandText.getText(), Integer.parseInt(modelText.getText()),
+							Double.parseDouble(priceText.getText()), kindText.getText(), specialText.getText());
+				}
+
+				else if (typeBox.getValue().equals("Bass")) {
+					success = guiAction.addBass(brandText.getText(), Integer.parseInt(modelText.getText()),
+							Double.parseDouble(priceText.getText()), kindText.getText());
+				}
+
+				else if (typeBox.getValue().equals("Percussion")) {
+					success = guiAction.addPercussion(brandText.getText(), Integer.parseInt(modelText.getText()),
+							Double.parseDouble(priceText.getText()), kindText.getText(),
+							Integer.parseInt(specialText.getText()));
+					System.out.println("Added success!");
+				}
+			} catch (Exception ex) {
+				System.out.println("Format error");
 			}
 
-			else if (typeBox.getValue().equals("Bass")) {
-				success = guiAction.addBass(brandText.getText(), Integer.parseInt(modelText.getText()),
-						Double.parseDouble(priceText.getText()), kindText.getText());
-			}
-
-			else if (typeBox.getValue().equals("Percussion")) {
-				success = guiAction.addPercussion(brandText.getText(), Integer.parseInt(modelText.getText()),
-						Double.parseDouble(priceText.getText()), kindText.getText(),
-						Integer.parseInt(specialText.getText()));
-				System.out.println("Added success!");
-			}
-			
-			
 			if (success) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Success!");
@@ -174,10 +178,10 @@ public class Gui extends Application {
 				alert.setContentText("Item has been added to the Database!");
 
 				alert.showAndWait();
-				
+
 				getViewProductMenu();
 			}
-			
+
 			else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Alert");
