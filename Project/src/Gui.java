@@ -144,44 +144,55 @@ public class Gui extends Application {
 		cancel.setOnAction(e -> {
 			getViewProductMenu();
 		});
-		
-		
+
 		submit.setOnAction(e -> {
-			if (typeBox.getValue().equals("Guitar")) {				
-				if (guiAction.addGuitar(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText(), specialText.getText())) {
-					System.out.println("Added success!");
-				}
-				
-				else {
-					System.out.println("Added failed!");
-				}
+
+			boolean success = false;
+
+			if (typeBox.getValue().equals("Guitar")) {
+				success = guiAction.addGuitar(brandText.getText(), Integer.parseInt(modelText.getText()),
+						Double.parseDouble(priceText.getText()), kindText.getText(), specialText.getText());
 			}
-			
+
 			else if (typeBox.getValue().equals("Bass")) {
-				if (guiAction.addBass(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText())) {
-					System.out.println("Added success!");
-				}
-				
-				else {
-					System.out.println("Added failed!");
-				}
+				success = guiAction.addBass(brandText.getText(), Integer.parseInt(modelText.getText()),
+						Double.parseDouble(priceText.getText()), kindText.getText());
+			}
+
+			else if (typeBox.getValue().equals("Percussion")) {
+				success = guiAction.addPercussion(brandText.getText(), Integer.parseInt(modelText.getText()),
+						Double.parseDouble(priceText.getText()), kindText.getText(),
+						Integer.parseInt(specialText.getText()));
+				System.out.println("Added success!");
 			}
 			
-			else if (typeBox.getValue().equals("Percussion")) {
-				if (guiAction.addPercussion(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText(), Integer.parseInt(specialText.getText()))) {
-					System.out.println("Added success!");
-				}
+			
+			if (success) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Success!");
+				alert.setHeaderText("Success!");
+				alert.setContentText("Item has been added to the Database!");
+
+				alert.showAndWait();
 				
-				else {
-					System.out.println("Added failed!");
-				}
+				getViewProductMenu();
+			}
+			
+			else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Alert");
+				alert.setHeaderText("Error adding product");
+				alert.setContentText("There was an error adding to the Database.");
+
+				alert.showAndWait();
 			}
 		});
 
 		typeBox.setOnAction(e -> {
 
 			if (typeBox.getValue().equals("Guitar")) {
-				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price,
+						priceText, kind, kindText);
 				brandText.setDisable(false);
 				modelText.setDisable(false);
 				priceText.setDisable(false);
@@ -189,24 +200,27 @@ public class Gui extends Application {
 				specialText.setDisable(false);
 
 				special.setText("Size");
-				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText, special, specialText);
+				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText,
+						special, specialText);
 			}
 
 			else if (typeBox.getValue().equals("Bass")) {
 
-				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price,
+						priceText, kind, kindText);
 
 				brandText.setDisable(false);
 				modelText.setDisable(false);
 				priceText.setDisable(false);
 				kindText.setDisable(false);
 				specialText.setDisable(false);
-				
+
 				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText);
 			}
 
 			else if (typeBox.getValue().equals("Percussion")) {
-				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price, priceText, kind, kindText);
+				center.getChildren().removeAll(special, specialText, brand, brandText, model, modelText, price,
+						priceText, kind, kindText);
 
 				brandText.setDisable(false);
 				modelText.setDisable(false);
@@ -215,12 +229,13 @@ public class Gui extends Application {
 				specialText.setDisable(false);
 
 				special.setText("Pieces");
-				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText, special, specialText);
+				center.getChildren().addAll(brand, brandText, model, modelText, price, priceText, kind, kindText,
+						special, specialText);
 			}
 
 		});
 
-		right.getChildren().addAll(cancel,submit);
+		right.getChildren().addAll(cancel, submit);
 		center.getChildren().addAll(type, typeBox);
 
 		main.setRight(right);
@@ -432,8 +447,7 @@ public class Gui extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		guiAction = new GuiAction();
-		//getMainMenu();
-		getAddMenu();
+		getMainMenu();
 	}
 
 }
