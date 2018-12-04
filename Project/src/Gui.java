@@ -2,7 +2,7 @@ import javafx.application.Application;
 
 import javafx.stage.Stage;
 import javafx.scene.chart.*;
-import javafx.scene.Group;
+import javafx.scene.chart.XYChart.Data;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +23,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class Gui extends Application {
 
@@ -432,18 +431,24 @@ public class Gui extends Application {
 
 		});
 
-		/*
-		 * getDetails.setOnAction(e -> { UserPojo p =
-		 * table.getSelectionModel().getSelectedItem();
-		 * 
-		 * if (p == null) { Alert alert = new Alert(AlertType.ERROR);
-		 * alert.setTitle("Alert"); alert.setHeaderText("No Item Selected");
-		 * alert.setContentText("You have not selected any item"); alert.showAndWait();
-		 * }
-		 * 
-		 * else details.setText(guiAction.getUserDetails(p)); });
-		 */
-		
+		getDetails.setOnAction(e -> {
+			if (table.getSelectionModel().getSelectedItem() == null) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Alert");
+				alert.setHeaderText("No Item Selected");
+				alert.setContentText("You have not selected any user");
+
+				alert.showAndWait();
+
+			}
+
+			else {
+				int userId = table.getSelectionModel().getSelectedItem().getId();
+				getUserDetails(userId);
+			}
+
+		});
+
 		stats.setOnAction(e -> {
 			getUserStats();
 		});
@@ -452,91 +457,97 @@ public class Gui extends Application {
 		VBox bottom = new VBox(10);
 
 		right.getChildren().addAll(back, delete, getDetails, stats);
-		
 
 		main.setCenter(table);
 		main.setRight(right);
 		main.setBottom(bottom);
 	}
-	
+
+	private void getUserDetails(int id) {
+		VBox main = new VBox();
+		main.setPadding(new Insets(10));
+
+		ScrollPane sp = new ScrollPane(main);
+		Scene scene = new Scene(sp, width, height);
+
+		primaryStage.setTitle("User Detail for User ID: " + id);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+		Button back = new Button("Back");
+
+		back.setOnAction(e -> {
+			getUsersMenu();
+		});
+
+		main.getChildren().addAll(back);
+	}
+
 	private void getUserStats() {
 		VBox main = new VBox();
 		main.setPadding(new Insets(10));
-		
+
 		ScrollPane sp = new ScrollPane(main);
 
-		Scene scene = new Scene(sp, width, height);
+		Scene scene = new Scene(sp, 550, 550);
 
 		primaryStage.setTitle("User Stats");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
+
 		Button back = new Button("Back");
 
-		
 		back.setOnAction(e -> {
 			getUsersMenu();
 		});
-		
+
 		ComboBox<String> typeBox = new ComboBox<>();
 		typeBox.getItems().addAll("Gender", "Browse Time");
-		
-		
-		
+
 		typeBox.setOnAction(e -> {
 			if (typeBox.getValue().equals("Gender")) {
-				if (main.getChildren().size()> 2)main.getChildren().remove(2);
-				main.getChildren().add(getUserChart());
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				int[] stats = guiAction.getUserGenderStat(3);
+
+				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+						new PieChart.Data("Female", stats[1]), new PieChart.Data("Male", stats[0]));
+
+				PieChart chart = new PieChart(pieChartData);
+				chart.setTitle("Gender Distribution");
+				chart.setData(pieChartData);
+
+				main.getChildren().add(chart);
 			}
-			
+
 			else if (typeBox.getValue().equals("Browse Time")) {
-				if (main.getChildren().size()> 2)main.getChildren().remove(2);
-				main.getChildren().add(getUserBrowseChart());
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				String male = "Male";
+				String female = "Female";
+
+				CategoryAxis xAxis = new CategoryAxis();
+				NumberAxis yAxis = new NumberAxis();
+				BarChart<String, Integer> chart = new BarChart(xAxis, yAxis);
+				chart.setTitle("Browse Time by Gender");
+				xAxis.setLabel("Gender");
+				yAxis.setLabel("Time in minutes");
+
+				int[] result = guiAction.getUserGenderStat(2);
+
+				XYChart.Series<String, Integer> series1 = new XYChart.Series<>();
+				series1.getData().add(new Data<String, Integer>(male, result[0]));
+				series1.getData().add(new Data<String, Integer>(female, result[1]));
+
+				chart.getData().addAll(series1);
+
+				main.getChildren().add(chart);
 			}
 		});
-		
-		
+
 		main.getChildren().addAll(typeBox, back);
-	}
-
-	private Chart getUserChart() {
-
-		int[] stats = guiAction.getUserGenderStat(3);
-
-		ObservableList<PieChart.Data> pieChartData = FXCollections
-				.observableArrayList(new PieChart.Data("Female", stats[1]), new PieChart.Data("Male", stats[0]));
-
-		PieChart chart = new PieChart(pieChartData);
-		chart.setTitle("Gender Distribution");
-		chart.setData(pieChartData);		
-		return chart;
-
-	}
-
-	private Chart getUserBrowseChart() {
-
-		String male = "Male";
-		String female = "Female";
-
-		CategoryAxis xAxis = new CategoryAxis();
-		NumberAxis yAxis = new NumberAxis();
-		BarChart<String, Number> bc = new BarChart<String, Number>(xAxis, yAxis);
-		bc.setTitle("Browse Time by Gender");
-		xAxis.setLabel("Gender");
-		yAxis.setLabel("Time in minutes");
-		
-		int[] result = guiAction.getUserGenderStat(2);
-
-		XYChart.Series series1 = new XYChart.Series();
-		series1.getData().add(new XYChart.Data(male, result[0]));
-		series1.getData().add(new XYChart.Data(female, result[1]));
-
-		bc.getData().addAll(series1);
-		
-		
-		return bc;
-
 	}
 
 	@Override
