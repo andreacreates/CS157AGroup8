@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiAction {
-	
+
 	public List<ProductPojo> getProducts() {
 
 		ArrayList<ProductPojo> ret = new ArrayList<>();
@@ -32,7 +32,7 @@ public class GuiAction {
 		return ret;
 
 	}
-	
+
 	public List<SalePojo> getSales() {
 
 		ArrayList<SalePojo> ret = new ArrayList<>();
@@ -58,7 +58,7 @@ public class GuiAction {
 		return ret;
 
 	}
-	
+
 	public List<UserPojo> getUsers() {
 
 		ArrayList<UserPojo> ret = new ArrayList<>();
@@ -100,7 +100,7 @@ public class GuiAction {
 			if (res.next()) {
 
 				if (type.equals("guitar")) {
-					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("kind") + "\n"
 							+ "Size: " + res.getString("size") + "\n";
 
 					DataBaseConnection.closeConnection();
@@ -108,15 +108,15 @@ public class GuiAction {
 				}
 
 				else if (type.equals("bass")) {
-					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n";
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("kind") + "\n";
 
 					DataBaseConnection.closeConnection();
 					return ret;
 				}
 
-				else if (type.equals("percussion")){
+				else if (type.equals("percussion")) {
 
-					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("type") + "\n"
+					String ret = "Price: " + res.getFloat("price") + "\n" + "Type: " + res.getString("kind") + "\n"
 							+ "Pieces: " + res.getString("pieces") + "\n";
 
 					DataBaseConnection.closeConnection();
@@ -131,7 +131,83 @@ public class GuiAction {
 
 		return "Error";
 	}
+
+	public boolean deleteProduct(int model) {
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("DELETE FROM product WHERE model = ?");
+
+		try {
+			stmt.setInt(1, model);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DataBaseConnection.closeConnection();
+			return false;
+		}
+		DataBaseConnection.closeConnection();
+		return true;
+	}
+
+	public boolean addGuitar(String brand, int model, double price, String kind, String size) {
+
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_guitar(?,?,?,?,?)");
+		try {
+			stmt.setString(1, brand);
+			stmt.setInt(2, model);
+			stmt.setDouble(3, price);
+			stmt.setString(4, kind);
+			stmt.setString(5, size);
+			DataBaseConnection.executePreparedStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DataBaseConnection.closeConnection();
+			return false;
+		}
+
+		DataBaseConnection.closeConnection();
+		return true;
+	}
+
+	public boolean addBass(String brand, int model, double price, String kind) {
+
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_bass(?,?,?,?)");
+		try {
+			stmt.setString(1, brand);
+			stmt.setInt(2, model);
+			stmt.setDouble(3, price);
+			stmt.setString(4, kind);
+			DataBaseConnection.executePreparedStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DataBaseConnection.closeConnection();
+			return false;
+		}
+
+		DataBaseConnection.closeConnection();
+		return true;
+	}
 	
-	
+	public boolean addPercussion(String brand, int model, double price, String kind, int pieces) {
+
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_percussion(?,?,?,?,?)");
+		try {
+			stmt.setString(1, brand);
+			stmt.setInt(2, model);
+			stmt.setDouble(3, price);
+			stmt.setString(4, kind);
+			stmt.setInt(5, pieces);
+			DataBaseConnection.executePreparedStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DataBaseConnection.closeConnection();
+			return false;
+		}
+
+		DataBaseConnection.closeConnection();
+		return true;
+	}
 
 }

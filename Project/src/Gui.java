@@ -144,6 +144,39 @@ public class Gui extends Application {
 		cancel.setOnAction(e -> {
 			getViewProductMenu();
 		});
+		
+		
+		submit.setOnAction(e -> {
+			if (typeBox.getValue().equals("Guitar")) {				
+				if (guiAction.addGuitar(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText(), specialText.getText())) {
+					System.out.println("Added success!");
+				}
+				
+				else {
+					System.out.println("Added failed!");
+				}
+			}
+			
+			else if (typeBox.getValue().equals("Bass")) {
+				if (guiAction.addBass(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText())) {
+					System.out.println("Added success!");
+				}
+				
+				else {
+					System.out.println("Added failed!");
+				}
+			}
+			
+			else if (typeBox.getValue().equals("Percussion")) {
+				if (guiAction.addPercussion(brandText.getText(), Integer.parseInt(modelText.getText()), Double.parseDouble(priceText.getText()), kindText.getText(), Integer.parseInt(specialText.getText()))) {
+					System.out.println("Added success!");
+				}
+				
+				else {
+					System.out.println("Added failed!");
+				}
+			}
+		});
 
 		typeBox.setOnAction(e -> {
 
@@ -266,7 +299,7 @@ public class Gui extends Application {
 				alert.showAndWait();
 
 				if (alert.getResult() == ButtonType.OK) {
-					System.out.println("Clicked yes Unimplemented DELETE");
+					guiAction.deleteProduct(p.getModel());
 				}
 
 				else {
@@ -399,7 +432,7 @@ public class Gui extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		guiAction = new GuiAction();
-		// getMainMenu();
+		//getMainMenu();
 		getAddMenu();
 	}
 

@@ -11,9 +11,9 @@ public final class DataBaseConnection {
 	private static final String PASS = "group3cs160";
 
 	// SQL Objects
-	private static Connection conn;
-	private static Statement stmt;
-	private static ResultSet rs;
+	private static Connection conn = null;
+	private static Statement stmt = null;
+	private static ResultSet rs = null;
 
 	public static Connection openConnection() {
 		try {
