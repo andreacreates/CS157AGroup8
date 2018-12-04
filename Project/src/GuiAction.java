@@ -209,5 +209,33 @@ public class GuiAction {
 		DataBaseConnection.closeConnection();
 		return true;
 	}
+	
+	public int[] getUserGenderStat() {
+		DataBaseConnection.openConnection();
+		ResultSet rs = DataBaseConnection.sqlStatement("SELECT count(gender) AS count, gender FROM user GROUP BY gender");
+		int male = 0;
+		int female = 0;
+		try {
+			rs.next();
+			if (rs.getString(2).equals("M")) male = rs.getInt(1);
+			else female = rs.getInt(1);
+			rs.next();
+			if (rs.getString(2).equals("M")) male = rs.getInt(1);
+			else female = rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		int[] ret =  {male,female};
+		
+		return ret;
+	}
+	
+	
+	public static void main(String[] args) {
+		GuiAction action = new GuiAction();
+		
+		action.getUserGenderStat();
+	}
 
 }
