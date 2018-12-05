@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -361,7 +360,7 @@ public class Gui extends Application {
 		VBox right = new VBox(10);
 
 		right.getChildren().addAll(back, add, delete, getDetails, stats);
-
+		
 		main.setCenter(table);
 		main.setRight(right);
 		main.setBottom(details);

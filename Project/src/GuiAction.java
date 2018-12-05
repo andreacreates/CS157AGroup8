@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GuiAction {
 
@@ -95,7 +94,7 @@ public class GuiAction {
 		DataBaseConnection.openConnection();
 
 		PreparedStatement stmt = DataBaseConnection
-				.createPreparedStatement("SELECT * FROM " + type + " WHERE model = ?");
+				.createPreparedStatement("SELECT * FROM combine_product WHERE model = ?");
 		try {
 			stmt.setInt(1, model);
 			ResultSet res = stmt.executeQuery();
@@ -214,8 +213,7 @@ public class GuiAction {
 
 	public int[] getUserGenderStat(int param) {
 		DataBaseConnection.openConnection();
-		ResultSet rs = DataBaseConnection.sqlStatement(
-				"SELECT gender, sum(browseTime) AS browseTime, count(id) AS count FROM user GROUP BY gender");
+		ResultSet rs = DataBaseConnection.sqlStatement("CALL get_gender_stats");
 		int male = 0;
 		int female = 0;
 		try {
@@ -233,6 +231,7 @@ public class GuiAction {
 			e.printStackTrace();
 		}
 
+		DataBaseConnection.closeConnection();
 		int[] ret = { male, female };
 
 		return ret;
@@ -240,8 +239,16 @@ public class GuiAction {
 
 	public HashMap<String, int[]> getProductStats(String group) {
 		DataBaseConnection.openConnection();
-		ResultSet rs = DataBaseConnection.sqlStatement(
-				("SELECT " + group + ", AVG(bought), AVG(views), COUNT(" + group + ") FROM product GROUP BY " + group));
+
+		ResultSet rs = null;
+
+		if (group.equals("type")) {
+			rs = DataBaseConnection.sqlStatement(("CALL product_by_type"));
+		}
+
+		else if (group.equals("brand")) {
+			rs = DataBaseConnection.sqlStatement(("CALL product_by_brand"));
+		}
 
 		HashMap<String, int[]> result = new HashMap<>();
 
@@ -261,6 +268,7 @@ public class GuiAction {
 			e.printStackTrace();
 		}
 
+		DataBaseConnection.closeConnection();
 		return result;
 	}
 
@@ -294,7 +302,7 @@ public class GuiAction {
 
 		return null;
 	}
-	
+
 	public List<SalePojo> getSaleByUser(int userId) {
 		DataBaseConnection.openConnection();
 		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM sales WHERE user = ?");
@@ -324,13 +332,6 @@ public class GuiAction {
 	}
 
 	public static void main(String[] args) {
-		GuiAction g = new GuiAction();
-		
-		List<ReviewPojo> list = g.getReviewByUser(7);
-		
-		for (ReviewPojo p : list) {
-			System.out.println(p);
-		}
 	}
 
 }
