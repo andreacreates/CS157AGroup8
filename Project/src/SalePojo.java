@@ -44,4 +44,8 @@ public class SalePojo {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+
+	public String toString() {
+		return "User ID: " + user + ", Item: " + item + ", Amount: " + amount;
+	}
 }

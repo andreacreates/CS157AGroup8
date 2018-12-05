@@ -190,7 +190,7 @@ public class GuiAction {
 		DataBaseConnection.closeConnection();
 		return true;
 	}
-	
+
 	public boolean addPercussion(String brand, int model, double price, String kind, int pieces) {
 
 		DataBaseConnection.openConnection();
@@ -211,65 +211,125 @@ public class GuiAction {
 		DataBaseConnection.closeConnection();
 		return true;
 	}
-	
+
 	public int[] getUserGenderStat(int param) {
 		DataBaseConnection.openConnection();
-		ResultSet rs = DataBaseConnection.sqlStatement("SELECT gender, sum(browseTime) AS browseTime, count(id) AS count FROM user GROUP BY gender");
+		ResultSet rs = DataBaseConnection.sqlStatement(
+				"SELECT gender, sum(browseTime) AS browseTime, count(id) AS count FROM user GROUP BY gender");
 		int male = 0;
 		int female = 0;
 		try {
 			rs.next();
-			if (rs.getString(1).equals("M")) male = rs.getInt(param);
-			else female = rs.getInt(param);
+			if (rs.getString(1).equals("M"))
+				male = rs.getInt(param);
+			else
+				female = rs.getInt(param);
 			rs.next();
-			if (rs.getString(1).equals("M")) male = rs.getInt(param);
-			else female = rs.getInt(param);
+			if (rs.getString(1).equals("M"))
+				male = rs.getInt(param);
+			else
+				female = rs.getInt(param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		int[] ret =  {male,female};
-		
+
+		int[] ret = { male, female };
+
 		return ret;
 	}
-	
-	public Map getProductStats(String group) {
-		DataBaseConnection.openConnection();
-		ResultSet rs = DataBaseConnection.sqlStatement(("SELECT " + group + ", AVG(bought), AVG(views), COUNT(" + group + ") FROM product GROUP BY " + group));
 
-		
+	public HashMap<String, int[]> getProductStats(String group) {
+		DataBaseConnection.openConnection();
+		ResultSet rs = DataBaseConnection.sqlStatement(
+				("SELECT " + group + ", AVG(bought), AVG(views), COUNT(" + group + ") FROM product GROUP BY " + group));
+
 		HashMap<String, int[]> result = new HashMap<>();
 
 		try {
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				String attribute = rs.getString(1);
 				int bought = rs.getInt(2);
 				int view = rs.getInt(3);
 				int count = rs.getInt(4);
-				
-				int[] stats = {bought, view, count};
+
+				int[] stats = { bought, view, count };
 				result.put(attribute, stats);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		
 		return result;
 	}
+
+	public List<ReviewPojo> getReviewByUser(int user) {
+
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM review WHERE user = ?");
+		try {
+			stmt.setInt(1, user);
+
+			ResultSet rs = DataBaseConnection.executePreparedStatement();
+
+			ArrayList<ReviewPojo> ret = new ArrayList<>();
+
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				int model = rs.getInt("model");
+				int userId = rs.getInt("user");
+				int rating = rs.getInt("rating");
+				String review = rs.getString("review");
+
+				ret.add(new ReviewPojo(id, model, userId, rating, review));
+
+			}
+
+			DataBaseConnection.closeConnection();
+			return ret;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 	
-	
+	public List<SalePojo> getSaleByUser(int userId) {
+		DataBaseConnection.openConnection();
+		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM sales WHERE user = ?");
+		try {
+			stmt.setInt(1, userId);
+
+			ResultSet rs = DataBaseConnection.executePreparedStatement();
+
+			ArrayList<SalePojo> ret = new ArrayList<>();
+
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				int user = rs.getInt("user");
+				int item = rs.getInt("item");
+				int amount = rs.getInt("amount");
+
+				ret.add(new SalePojo(id, user, item, amount));
+			}
+
+			DataBaseConnection.closeConnection();
+			return ret;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static void main(String[] args) {
 		GuiAction g = new GuiAction();
-		Map<String, int[]> map = g.getProductStats("brand");
-
 		
-		int[] arr = map.get("Yamaha");
+		List<ReviewPojo> list = g.getReviewByUser(7);
 		
-		for (int i : arr) {
-			System.out.println(i);
+		for (ReviewPojo p : list) {
+			System.out.println(p);
 		}
 	}
 

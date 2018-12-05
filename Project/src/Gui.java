@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javafx.application.Application;
 
 import javafx.stage.Stage;
@@ -52,7 +56,7 @@ public class Gui extends Application {
 		Button users = new Button("View Users");
 
 		products.setOnAction(e -> {
-			getViewProductMenu();
+			getProductMenu();
 		});
 
 		sales.setOnAction(e -> {
@@ -146,7 +150,7 @@ public class Gui extends Application {
 		TextField specialText = new TextField();
 
 		cancel.setOnAction(e -> {
-			getViewProductMenu();
+			getProductMenu();
 		});
 
 		submit.setOnAction(e -> {
@@ -183,7 +187,7 @@ public class Gui extends Application {
 
 				alert.showAndWait();
 
-				getViewProductMenu();
+				getProductMenu();
 			}
 
 			else {
@@ -251,7 +255,7 @@ public class Gui extends Application {
 
 	}
 
-	private void getViewProductMenu() {
+	private void getProductMenu() {
 
 		BorderPane main = new BorderPane();
 		main.setPadding(new Insets(10));
@@ -290,6 +294,8 @@ public class Gui extends Application {
 		Button delete = new Button("Delete");
 		Button getDetails = new Button("Details");
 		Button add = new Button("New Item");
+		Button moreDetails = new Button("Mode Details");
+		Button stats = new Button("Stats");
 
 		Text details = new Text("Select a Product");
 
@@ -347,10 +353,14 @@ public class Gui extends Application {
 			else
 				details.setText(guiAction.getProductDetails(p));
 		});
+		
+		stats.setOnAction(e -> {
+			getProductStats();
+		});
 
 		VBox right = new VBox(10);
 
-		right.getChildren().addAll(back, add, delete, getDetails);
+		right.getChildren().addAll(back, add, delete, getDetails, stats);
 
 		main.setCenter(table);
 		main.setRight(right);
@@ -475,12 +485,43 @@ public class Gui extends Application {
 		primaryStage.show();
 
 		Button back = new Button("Back");
+		Text text = new Text();
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("Details for User ID: " + id + "\n\n");
+
+		GuiAction g = new GuiAction();
+
+		
+		sb.append("Reviews\n\n");
+		List<ReviewPojo> reviews = g.getReviewByUser(id);
+
+		if (reviews.isEmpty()) {
+			sb.append("No reviews made by this user\n\n");
+		}
+		
+		for (ReviewPojo p : reviews) {
+			sb.append(p.toString() + "\n\n");
+		}
+		
+		sb.append("Sales\n\n");
+		List<SalePojo> sales = g.getSaleByUser(id);
+
+		if (sales.isEmpty()) {
+			sb.append("No sales made by this user\n\n");
+		}
+		
+		for (SalePojo p : sales) {
+			sb.append(p.toString() + "\n\n");
+		}
 
 		back.setOnAction(e -> {
 			getUsersMenu();
 		});
 
-		main.getChildren().addAll(back);
+		text.setText(sb.toString());
+		
+		main.getChildren().addAll(back, text);
 	}
 
 	private void getUserStats() {
@@ -543,6 +584,134 @@ public class Gui extends Application {
 
 				chart.getData().addAll(series1);
 
+				main.getChildren().add(chart);
+			}
+		});
+
+		main.getChildren().addAll(typeBox, back);
+	}
+	
+	private void getProductStats() {
+		VBox main = new VBox();
+		main.setPadding(new Insets(10));
+
+		ScrollPane sp = new ScrollPane(main);
+
+		Scene scene = new Scene(sp, 550, 550);
+
+		primaryStage.setTitle("Product Stats");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+		Button back = new Button("Back");
+
+		back.setOnAction(e -> {
+			getProductMenu();
+		});
+
+		ComboBox<String> typeBox = new ComboBox<>();
+		typeBox.getItems().addAll("Brand", "Type", "Brand Bought", "Type Bought");
+
+		typeBox.setOnAction(e -> {
+			if (typeBox.getValue().equals("Brand")) {
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				HashMap<String, int[]> hm = guiAction.getProductStats("brand");
+
+				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+				
+				
+				for (String s : hm.keySet()) {
+					pieChartData.add(new PieChart.Data(s, hm.get(s)[2]));
+				}
+				
+				PieChart chart = new PieChart(pieChartData);
+				chart.setTitle("Products by Brand");
+				chart.setData(pieChartData);
+
+				main.getChildren().add(chart);
+			}
+
+			else if (typeBox.getValue().equals("Type")) {
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				HashMap<String, int[]> hm = guiAction.getProductStats("type");
+
+				ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+	
+				for (String s : hm.keySet()) {
+					pieChartData.add(new PieChart.Data(s, hm.get(s)[2]));
+				}
+				
+				PieChart chart = new PieChart(pieChartData);
+				chart.setTitle("Products by Type");
+				chart.setData(pieChartData);
+
+				main.getChildren().add(chart);
+			}
+			
+			else if (typeBox.getValue().equals("Brand Bought")) {
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				
+				HashMap<String, int[]> hm = guiAction.getProductStats("brand");
+
+
+				CategoryAxis xAxis = new CategoryAxis();
+				NumberAxis yAxis = new NumberAxis();
+				BarChart<String, Integer> chart = new BarChart(xAxis, yAxis);
+				chart.setTitle("Bough to View ratio by Brand");
+				xAxis.setLabel("Brand");
+				yAxis.setLabel("Count");
+				
+				XYChart.Series<String, Integer> views = new XYChart.Series<>();
+				views.setName("Views");
+				
+				XYChart.Series<String, Integer> bought = new XYChart.Series<>();
+				bought.setName("Bought"); 
+				
+				
+				for (String s : hm.keySet()) {
+					views.getData().add(new Data<String, Integer>(s, hm.get(s)[1]));
+					bought.getData().add(new Data<String, Integer>(s, hm.get(s)[0]));
+				}
+
+				chart.getData().addAll(views, bought);
+				main.getChildren().add(chart);
+			}
+			
+			else if (typeBox.getValue().equals("Type Bought")) {
+				if (main.getChildren().size() > 2)
+					main.getChildren().remove(2);
+
+				
+				HashMap<String, int[]> hm = guiAction.getProductStats("type");
+
+
+				CategoryAxis xAxis = new CategoryAxis();
+				NumberAxis yAxis = new NumberAxis();
+				BarChart<String, Integer> chart = new BarChart(xAxis, yAxis);
+				chart.setTitle("Bough to View ratio by Type");
+				xAxis.setLabel("Brand");
+				yAxis.setLabel("Count");
+				
+				XYChart.Series<String, Integer> views = new XYChart.Series<>();
+				views.setName("Views");
+				
+				XYChart.Series<String, Integer> bought = new XYChart.Series<>();
+				bought.setName("Bought"); 
+				
+				
+				for (String s : hm.keySet()) {
+					views.getData().add(new Data<String, Integer>(s, hm.get(s)[1]));
+					bought.getData().add(new Data<String, Integer>(s, hm.get(s)[0]));
+				}
+
+				chart.getData().addAll(views, bought);
 				main.getChildren().add(chart);
 			}
 		});
