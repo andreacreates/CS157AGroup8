@@ -4,9 +4,9 @@
 */
 
 CREATE TABLE `product` (
-  `brand` varchar(20) NOT NULL,
   `model` int(11) NOT NULL,
   `type` varchar(20) NOT NULL,
+  `brand` varchar(20) NOT NULL,
   `bought` int(11) DEFAULT 0,
   `views` int(11) DEFAULT 0,
   PRIMARY KEY (`model`),
@@ -14,8 +14,8 @@ CREATE TABLE `product` (
 );
 
 CREATE TABLE `percussion` (
-  `price` float NOT NULL,
   `model` int(11) NOT NULL,
+  `price` float NOT NULL,
   `kind` varchar(20) NOT NULL,
   `pieces` int(11) NOT NULL,
   PRIMARY KEY (`model`),
@@ -23,8 +23,8 @@ CREATE TABLE `percussion` (
 );
 
 CREATE TABLE `guitar` (
-  `price` float NOT NULL,
   `model` int(11) NOT NULL,
+  `price` float NOT NULL,
   `kind` varchar(20) NOT NULL,
   `size` varchar(11) NOT NULL,
   PRIMARY KEY (`model`),
@@ -32,8 +32,8 @@ CREATE TABLE `guitar` (
 );
 
 CREATE TABLE `bass` (
-  `price` float NOT NULL,
   `model` int(11) NOT NULL,
+  `price` float NOT NULL,
   `kind` varchar(20) NOT NULL,
   PRIMARY KEY (`model`),
   UNIQUE KEY `model` (`model`),
@@ -41,9 +41,9 @@ CREATE TABLE `bass` (
 );
 
 CREATE TABLE `user` (
-  `age` int(11) NOT NULL,
-  `gender` char(1) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gender` char(1) NOT NULL,
+  `age` int(11) NOT NULL,
   `browseTime` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
@@ -52,8 +52,8 @@ CREATE TABLE `review` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `model` int(11) NOT NULL,
   `user` int(11),
-  `review` varchar(500) NOT NULL,
   `rating` int(11) NOT NULL,
+  `review` varchar(500) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `reviewed_by` (`user`),
   KEY `item_reviewed` (`model`),
