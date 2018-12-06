@@ -43,6 +43,7 @@ CREATE TABLE `percussion` (
   `kind` varchar(20) NOT NULL,
   `pieces` int(11) NOT NULL,
   PRIMARY KEY (`model`),
+  UNIQUE KEY `model` (`model`),
   CONSTRAINT `percussion_item` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE
 );
 
@@ -52,6 +53,7 @@ CREATE TABLE `guitar` (
   `kind` varchar(20) NOT NULL,
   `size` varchar(11) NOT NULL,
   PRIMARY KEY (`model`),
+  UNIQUE KEY `model` (`model`),
   CONSTRAINT `guitar_item` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE
 );
 
