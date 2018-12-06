@@ -4,74 +4,74 @@
 */
 
 CREATE TABLE `product` (
-  `brand` varchar(20) DEFAULT NULL,
+  `brand` varchar(20) NOT NULL,
   `model` int(11) NOT NULL,
-  `type` varchar(20) DEFAULT NULL,
-  `bought` int(11) DEFAULT NULL,
-  `views` int(11) DEFAULT NULL,
+  `type` varchar(20) NOT NULL,
+  `bought` int(11) DEFAULT 0,
+  `views` int(11) DEFAULT 0,
   PRIMARY KEY (`model`),
   UNIQUE KEY `model_index` (`model`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `percussion` (
-  `price` float DEFAULT NULL,
+  `price` float NOT NULL,
   `model` int(11) NOT NULL,
-  `kind` varchar(20) DEFAULT NULL,
-  `pieces` int(11) DEFAULT NULL,
+  `kind` varchar(20) NOT NULL,
+  `pieces` int(11) NOT NULL,
   PRIMARY KEY (`model`),
   CONSTRAINT `percussion_item` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `guitar` (
-  `price` float DEFAULT NULL,
+  `price` float NOT NULL,
   `model` int(11) NOT NULL,
-  `kind` varchar(20) DEFAULT NULL,
-  `size` varchar(11) DEFAULT NULL,
+  `kind` varchar(20) NOT NULL,
+  `size` varchar(11) NOT NULL,
   PRIMARY KEY (`model`),
   CONSTRAINT `guitar_item` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `bass` (
-  `price` float DEFAULT NULL,
+  `price` float NOT NULL,
   `model` int(11) NOT NULL,
-  `kind` varchar(20) DEFAULT NULL,
+  `kind` varchar(20) NOT NULL,
   PRIMARY KEY (`model`),
   UNIQUE KEY `model` (`model`),
   CONSTRAINT `bass_item` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `user` (
-  `age` int(11) DEFAULT NULL,
-  `gender` char(1) DEFAULT NULL,
-  `id` int(11) NOT NULL,
+  `age` int(11) NOT NULL,
+  `gender` char(1) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `browseTime` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `review` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `model` int(11) DEFAULT NULL,
-  `user` int(11) DEFAULT NULL,
-  `review` varchar(500) DEFAULT NULL,
-  `rating` int(11) DEFAULT NULL,
+  `model` int(11) NOT NULL,
+  `user` int(11),
+  `review` varchar(500) NOT NULL,
+  `rating` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `reviewed_by` (`user`),
   KEY `item_reviewed` (`model`),
   CONSTRAINT `item_reviewed` FOREIGN KEY (`model`) REFERENCES `product` (`model`) ON DELETE CASCADE,
   CONSTRAINT `reviewed_by` FOREIGN KEY (`user`) REFERENCES `user` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `sales` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
-  `item` int(11) DEFAULT NULL,
-  `amount` int(11) DEFAULT NULL,
+  `user` int(11),
+  `item` int(11),
+  `amount` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `bought_by` (`user`),
   KEY `item_bought` (`item`),
   CONSTRAINT `bought_by` FOREIGN KEY (`user`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `item_bought` FOREIGN KEY (`item`) REFERENCES `product` (`model`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+);
 
 
 /*
@@ -137,34 +137,34 @@ VALUES
 
 INSERT INTO `user` (`age`, `gender`, `id`, `browseTime`)
 VALUES
-	(45, 'F', 1, 45),
-	(54, 'M', 2, 65),
-	(34, 'M', 3, 44),
-	(22, 'F', 4, 66),
-	(56, 'M', 5, 52),
-	(43, 'M', 6, 98),
-	(18, 'M', 7, 7),
-	(25, 'M', 8, 80);
+	(45, 'F', NULL, 45),
+	(54, 'M', NULL, 65),
+	(34, 'M', NULL, 44),
+	(22, 'F', NULL, 66),
+	(56, 'M', NULL, 52),
+	(43, 'M', NULL, 98),
+	(18, 'M', NULL, 7),
+	(25, 'M', NULL, 80);
 
 INSERT INTO `sales` (`id`, `user`, `item`, `amount`)
 VALUES
-	(1, 3, 2002, 145),
-	(2, 3, 1001, 300),
-	(3, 2, 3007, 680),
-	(4, 4, 3006, 250),
-	(5, 4, 2002, 145),
-	(6, 5, 1005, 230),
-	(7, 6, 1000, 150);
+	(NULL, 3, 2002, 145),
+	(NULL, 3, 1001, 300),
+	(NULL, 2, 3007, 680),
+	(NULL, 4, 3006, 250),
+	(NULL, 4, 2002, 145),
+	(NULL, 5, 1005, 230),
+	(NULL, 6, 1000, 150);
 
 INSERT INTO `review` (`id`, `model`, `user`, `review`, `rating`)
 VALUES
-	(22, 2002, 7, 'Very good Bass FOR the price', 9),
-	(23, 1001, 2, 'nice guitar!', 8),
-	(24, 3007, 5, 'nice set of drums for a beginner', 8),
-	(25, 3002, 3, 'not good', 4),
-	(26, 1002, 6, 'good price', 8),
-	(27, 3006, 4, 'I recommend this Floor tom', 8),
-	(29, 3005, 7, 'high quality drum set', 10);
+	(NULL, 2002, 7, 'Very good Bass FOR the price', 9),
+	(NULL, 1001, 2, 'nice guitar!', 8),
+	(NULL, 3007, 5, 'nice set of drums for a beginner', 8),
+	(NULL, 3002, 3, 'not good', 4),
+	(NULL, 1002, 6, 'good price', 8),
+	(NULL, 3006, 4, 'I recommend this Floor tom', 8),
+	(NULL, 3005, 7, 'high quality drum set', 10);
 
 
 
