@@ -88,7 +88,7 @@ public class GuiAction {
 
 	}
 
-	public String getProductDetails(ProductPojo p) throws SQLException {
+	public String getProductDetails(ProductPojo p) {
 
 		String type = p.getType().toLowerCase();
 		int model = p.getModel();
@@ -134,7 +134,7 @@ public class GuiAction {
 		return "Error";
 	}
 
-	public boolean deleteProduct(int model) throws SQLException {
+	public boolean deleteProduct(int model) {
 		DataBaseConnection.openConnection();
 		CallableStatement stmt = DataBaseConnection.prepareCall("DELETE FROM product WHERE model = ?");
 
@@ -150,7 +150,7 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addGuitar(String brand, int model, double price, String kind, String size) throws SQLException {
+	public boolean addGuitar(String brand, int model, double price, String kind, String size) {
 
 		DataBaseConnection.openConnection();
 		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_guitar(?,?,?,?,?)");
@@ -171,7 +171,7 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addBass(String brand, int model, double price, String kind) throws SQLException {
+	public boolean addBass(String brand, int model, double price, String kind) {
 		
 		 
 		DataBaseConnection.openConnection();
@@ -194,7 +194,7 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addPercussion(String brand, int model, double price, String kind, int pieces) throws SQLException  {
+	public boolean addPercussion(String brand, int model, double price, String kind, int pieces)  {
 
 		DataBaseConnection.openConnection();
 		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_bass(?,?,?,?)");
@@ -276,7 +276,7 @@ public class GuiAction {
 		return result;
 	}
 
-	public List<ReviewPojo> getReviewByUser(int user) throws SQLException {
+	public List<ReviewPojo> getReviewByUser(int user) {
 
 		DataBaseConnection.openConnection();
 		CallableStatement stmt = DataBaseConnection.prepareCall("SELECT * FROM review WHERE user = ?");
@@ -307,7 +307,7 @@ public class GuiAction {
 		return null;
 	}
 
-	public List<SalePojo> getSaleByUser(int userId) throws SQLException {
+	public List<SalePojo> getSaleByUser(int userId) {
 		DataBaseConnection.openConnection();
 		CallableStatement stmt = DataBaseConnection.prepareCall("SELECT * FROM sales WHERE user = ?");
 		try {

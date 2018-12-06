@@ -51,7 +51,7 @@ public final class DataBaseConnection {
 			return null;
 		}
 	}
-	
+
 	public static ResultSet executeCallableStatement() {
 		CallableStatement cs = (CallableStatement) stmt;
 		try {
@@ -99,9 +99,14 @@ public final class DataBaseConnection {
 			e.printStackTrace();
 		}
 	}
-	
-	public static CallableStatement prepareCall(String string) throws SQLException {
-		conn.prepareCall(string);
+
+	public static CallableStatement prepareCall(String string) {
+		try {
+			stmt = conn.prepareCall(string);
+			return (CallableStatement) stmt;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }
