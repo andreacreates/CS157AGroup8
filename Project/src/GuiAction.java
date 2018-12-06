@@ -197,7 +197,7 @@ public class GuiAction {
 	public boolean addPercussion(String brand, int model, double price, String kind, int pieces)  {
 
 		DataBaseConnection.openConnection();
-		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_bass(?,?,?,?)");
+		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_percussion(?,?,?,?,?)");
 		try {
 			stmt.setString(1, brand);
 			stmt.setInt(2, model);
