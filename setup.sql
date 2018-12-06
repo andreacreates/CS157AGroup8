@@ -1,5 +1,29 @@
 
 /*
+	Drop Everything
+*/
+
+DROP TABLE review;
+DROP TABLE sales;
+DROP TABLE bass;
+DROP TABLE percussion;
+DROP TABLE guitar;
+DROP TABLE product;
+DROP TABLE user;
+
+DROP view combine_product;
+DROP view model_average_rating;
+
+DROP PROCEDURE add_bass;
+DROP PROCEDURE add_guitar;
+DROP PROCEDURE add_percussion;
+DROP PROCEDURE add_review;
+DROP PROCEDURE get_gender_stats;
+DROP PROCEDURE product_by_brand;
+DROP PROCEDURE product_by_type;
+DROP PROCEDURE update_review;
+
+/*
 	Tables
 */
 
