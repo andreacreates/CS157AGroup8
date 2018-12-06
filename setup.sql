@@ -11,8 +11,8 @@ DROP TABLE guitar;
 DROP TABLE product;
 DROP TABLE user;
 
-DROP view combine_product;
-DROP view model_average_rating;
+DROP VIEW combine_product;
+DROP VIEW model_average_rating;
 
 DROP PROCEDURE add_bass;
 DROP PROCEDURE add_guitar;
