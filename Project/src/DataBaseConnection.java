@@ -1,5 +1,7 @@
 import java.sql.*;
 
+import com.mysql.cj.jdbc.CallableStatement;
+
 // Class used for connecting to the Database
 public final class DataBaseConnection {
 	// JDBC driver name and database URL
@@ -49,6 +51,17 @@ public final class DataBaseConnection {
 			return null;
 		}
 	}
+	
+	public static ResultSet executeCallableStatement() {
+		CallableStatement cs = (CallableStatement) stmt;
+		try {
+			rs = cs.executeQuery();
+			return rs;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	// executes regular statement and returns result set
 	public static ResultSet sqlStatement(String sql) {
@@ -85,5 +98,10 @@ public final class DataBaseConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static CallableStatement prepareCall(String string) throws SQLException {
+		conn.prepareCall(string);
+		return null;
 	}
 }

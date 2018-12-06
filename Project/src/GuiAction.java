@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mysql.cj.jdbc.CallableStatement;
+
 public class GuiAction {
 
 	public List<ProductPojo> getProducts() {
@@ -86,15 +88,14 @@ public class GuiAction {
 
 	}
 
-	public String getProductDetails(ProductPojo p) {
+	public String getProductDetails(ProductPojo p) throws SQLException {
 
 		String type = p.getType().toLowerCase();
 		int model = p.getModel();
 
 		DataBaseConnection.openConnection();
 
-		PreparedStatement stmt = DataBaseConnection
-				.createPreparedStatement("SELECT * FROM combine_product WHERE model = ?");
+		CallableStatement stmt = DataBaseConnection.prepareCall("SELECT * FROM combine_product WHERE model = ?");
 		try {
 			stmt.setInt(1, model);
 			ResultSet res = stmt.executeQuery();
@@ -133,9 +134,9 @@ public class GuiAction {
 		return "Error";
 	}
 
-	public boolean deleteProduct(int model) {
+	public boolean deleteProduct(int model) throws SQLException {
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("DELETE FROM product WHERE model = ?");
+		CallableStatement stmt = DataBaseConnection.prepareCall("DELETE FROM product WHERE model = ?");
 
 		try {
 			stmt.setInt(1, model);
@@ -149,17 +150,17 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addGuitar(String brand, int model, double price, String kind, String size) {
+	public boolean addGuitar(String brand, int model, double price, String kind, String size) throws SQLException {
 
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_guitar(?,?,?,?,?)");
+		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_guitar(?,?,?,?,?)");
 		try {
 			stmt.setString(1, brand);
 			stmt.setInt(2, model);
 			stmt.setDouble(3, price);
 			stmt.setString(4, kind);
 			stmt.setString(5, size);
-			DataBaseConnection.executePreparedStatement();
+			DataBaseConnection.executeCallableStatement();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			DataBaseConnection.closeConnection();
@@ -170,16 +171,19 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addBass(String brand, int model, double price, String kind) {
-
+	public boolean addBass(String brand, int model, double price, String kind) throws SQLException {
+		
+		 
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_bass(?,?,?,?)");
+		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_bass(?,?,?,?)");
+		//PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_bass(?,?,?,?)");
 		try {
 			stmt.setString(1, brand);
 			stmt.setInt(2, model);
 			stmt.setDouble(3, price);
 			stmt.setString(4, kind);
-			DataBaseConnection.executePreparedStatement();
+			DataBaseConnection.executeCallableStatement();
+			//DataBaseConnection.executePreparedStatement();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			DataBaseConnection.closeConnection();
@@ -190,17 +194,17 @@ public class GuiAction {
 		return true;
 	}
 
-	public boolean addPercussion(String brand, int model, double price, String kind, int pieces) {
+	public boolean addPercussion(String brand, int model, double price, String kind, int pieces) throws SQLException  {
 
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("CALL add_percussion(?,?,?,?,?)");
+		CallableStatement stmt = DataBaseConnection.prepareCall("CALL add_bass(?,?,?,?)");
 		try {
 			stmt.setString(1, brand);
 			stmt.setInt(2, model);
 			stmt.setDouble(3, price);
 			stmt.setString(4, kind);
 			stmt.setInt(5, pieces);
-			DataBaseConnection.executePreparedStatement();
+			DataBaseConnection.executeCallableStatement();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			DataBaseConnection.closeConnection();
@@ -272,14 +276,14 @@ public class GuiAction {
 		return result;
 	}
 
-	public List<ReviewPojo> getReviewByUser(int user) {
+	public List<ReviewPojo> getReviewByUser(int user) throws SQLException {
 
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM review WHERE user = ?");
+		CallableStatement stmt = DataBaseConnection.prepareCall("SELECT * FROM review WHERE user = ?");
 		try {
 			stmt.setInt(1, user);
 
-			ResultSet rs = DataBaseConnection.executePreparedStatement();
+			ResultSet rs = DataBaseConnection.executeCallableStatement();
 
 			ArrayList<ReviewPojo> ret = new ArrayList<>();
 
@@ -303,13 +307,13 @@ public class GuiAction {
 		return null;
 	}
 
-	public List<SalePojo> getSaleByUser(int userId) {
+	public List<SalePojo> getSaleByUser(int userId) throws SQLException {
 		DataBaseConnection.openConnection();
-		PreparedStatement stmt = DataBaseConnection.createPreparedStatement("SELECT * FROM sales WHERE user = ?");
+		CallableStatement stmt = DataBaseConnection.prepareCall("SELECT * FROM sales WHERE user = ?");
 		try {
 			stmt.setInt(1, userId);
 
-			ResultSet rs = DataBaseConnection.executePreparedStatement();
+			ResultSet rs = DataBaseConnection.executeCallableStatement();
 
 			ArrayList<SalePojo> ret = new ArrayList<>();
 
