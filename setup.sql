@@ -172,25 +172,15 @@ VALUES
 	Views
 */
 
-CREATE VIEW combine_product AS
-SELECT
-   product.model AS model,
-   product.brand AS brand,
-   product.type AS TYPE,
-   product.bought AS bought,
-   product.views AS views,
-   combine.price AS price,
-   combine.kind AS kind,
-   combine.size AS size,
-   combine.pieces AS pieces
-FROM (((select bass.price AS price,bass.model AS model,bass.kind AS kind,NULL AS size,NULL AS pieces from bass) 
-	union 
-	select guitar.price AS price,guitar.model AS model,guitar.kind AS kind,guitar.size AS size,NULL AS pieces from guitar 
-	union 
-	select percussion.price AS price,percussion.model AS model,percussion.kind AS kind,NULL AS size,percussion.pieces AS pieces 
-	from percussion) combine 
-	join 
-	product on((product.model = combine.model)));
+CREATE VIEW combine_product AS 
+SELECT product.model, brand, TYPE, bought, views, price, kind, NULL AS size, NULL AS pieces
+FROM bass JOIN product WHERE bass.model = product.model
+UNION 
+SELECT product.model, brand, TYPE, bought, views, price, kind, NULL AS size, pieces
+FROM percussion JOIN product WHERE percussion.model = product.model
+UNION
+SELECT product.model, brand, TYPE, bought, views, price, kind, size, NULL AS pieces
+FROM guitar JOIN product WHERE guitar.model = product.model;
 
 CREATE VIEW model_average_rating AS
 SELECT
