@@ -275,3 +275,22 @@ set review = newRev,
 rating = newRating
 where id = revId;;
 DELIMITER ;
+
+
+
+/*
+	Triggers
+*/
+
+
+DELIMITER $$
+create trigger sales_update
+after insert on sales
+for each row
+begin
+Update product
+Set bought = bought + 1
+Where product.model = new.model;
+end$$
+
+DELIMITER ;
