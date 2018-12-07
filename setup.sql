@@ -290,7 +290,7 @@ for each row
 begin
 Update product
 Set bought = bought + 1
-Where product.model = new.model;
+Where product.model = sales.model;
 end$$
 
 DELIMITER ;
