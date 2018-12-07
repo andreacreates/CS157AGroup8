@@ -13,6 +13,7 @@ DROP TABLE user;
 
 DROP VIEW combine_product;
 DROP VIEW model_average_rating;
+DROP VIEW most_popular_items;
 
 DROP PROCEDURE add_bass;
 DROP PROCEDURE add_guitar;
@@ -212,6 +213,11 @@ CREATE VIEW model_average_rating AS
 SELECT
    review.model AS model, avg(review.rating) AS average
 FROM review group by review.model;
+
+CREATE VIEW most_popular_items AS
+SELECT combine_product.brand,combine_product.type, combine_product.model, popular.bought FROM 
+(SELECT max(bought) AS bought, brand FROM combine_product GROUP BY brand) popular
+INNER JOIN combine_product ON combine_product.bought = popular.bought;
 
 /*
 	Procedures
