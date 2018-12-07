@@ -3,26 +3,26 @@
 	Drop Everything
 */
 
-DROP TABLE review;
-DROP TABLE sales;
-DROP TABLE bass;
-DROP TABLE percussion;
-DROP TABLE guitar;
-DROP TABLE product;
-DROP TABLE user;
+DROP TABLE IF EXISTS review;
+DROP TABLE IF EXISTS sales;
+DROP TABLE IF EXISTS bass;
+DROP TABLE IF EXISTS percussion;
+DROP TABLE IF EXISTS guitar;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS user;
 
-DROP VIEW combine_product;
-DROP VIEW model_average_rating;
-DROP VIEW most_popular_items;
+DROP VIEW IF EXISTS combine_product;
+DROP VIEW IF EXISTS model_average_rating;
+DROP VIEW IF EXISTS most_popular_items;
 
-DROP PROCEDURE add_bass;
-DROP PROCEDURE add_guitar;
-DROP PROCEDURE add_percussion;
-DROP PROCEDURE add_review;
-DROP PROCEDURE get_gender_stats;
-DROP PROCEDURE product_by_brand;
-DROP PROCEDURE product_by_type;
-DROP PROCEDURE update_review;
+DROP PROCEDURE IF EXISTS add_bass;
+DROP PROCEDURE IF EXISTS add_guitar;
+DROP PROCEDURE IF EXISTS add_percussion;
+DROP PROCEDURE IF EXISTS add_review;
+DROP PROCEDURE IF EXISTS get_gender_stats;
+DROP PROCEDURE IF EXISTS product_by_brand;
+DROP PROCEDURE IF EXISTS product_by_type;
+DROP PROCEDURE IF EXISTS update_review;
 
 /*
 	Tables
